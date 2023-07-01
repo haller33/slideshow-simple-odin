@@ -1,7 +1,7 @@
 
 * SlideShow-Simple
 
-** A Implementation of [[slideshow-simple][slideshow-simple]] on Odin!
+** A Implementation of [[https://github.com/apg/slideshow-simple][slideshow-simple]] on Odin!
 
 the objective is to create a slide like structure
 that interprete plain .rkt '#lang slideshow/simple'
