@@ -8,6 +8,13 @@ that interprete plain .rkt '#lang slideshow/simple'
 and that have the habilit to read a custom format,
 with the same 'syntax' and semantics, since [[https://github.com/apg/slideshow-simple][SSS]] is so simple (hehe)
 
+the main goal is to be able to generate slides on a simple fashion
+without the need to have all the Racket enviropment on machine
+but only a single binary or only Odin itself!
+
+since with the second goal is been able to generate plain .pdf
+and .epub presentations modes, so is not (a pain in the ass)
+dificult to generate a .pdf from Slideshow mode of Racket!
 
 
 ** demos
