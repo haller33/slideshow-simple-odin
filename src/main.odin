@@ -30,7 +30,12 @@ TEST_STATEMENT :: false
 main_source :: proc() {
 
 
-  windown_dim :: n.int2{400, 100}
+  display := rl.GetCurrentMonitor()
+  windown_dim :: n.int2{800, 600}
+  old_windown_dim := n.int2{
+    rl.GetMonitorWidth(display),
+    rl.GetMonitorHeight(display),
+  }
 
   when INTERFACE_RAYLIB {
 
@@ -46,6 +51,22 @@ main_source :: proc() {
 
 
     is_running :: true
+
+
+    if (rl.IsWindowFullscreen()) {
+      // if we are full screen, then go back to the windowed size
+      rl.SetWindowSize(windown_dim.x, windown_dim.y)
+    } else {
+
+      // if we are not full screen, set the window size to match the monitor we are on
+      rl.SetWindowSize(
+        rl.GetMonitorWidth(display),
+        rl.GetMonitorHeight(display),
+      )
+    }
+
+    // toggle the state
+    rl.ToggleFullscreen()
 
     // fmt.println(keyfor)
 
