@@ -1,29 +1,20 @@
 
-* Spawn-rune
+* SlideShow-Simple
 
-Spawn programs with a search on PATH and custom directories, also .desktop files, configure with LUA
+** A Implementation of [[slideshow-simple][slideshow-simple]] on Odin!
 
-[[../demo/assets/demonstration_one.gif?raw=true]]
+the objective is to create a slide like structure
+that interprete plain .rkt '#lang slideshow/simple'
+and that have the habilit to read a custom format,
+with the same 'syntax' and semantics, since [[https://github.com/apg/slideshow-simple][SSS]] is so simple (hehe)
+
 
 
 ** demos
 
 
-[[assets/preview_emacs.png]]
-
-
-[[assets/preview_simple.png]]
-
-
-[[assets/notfound_example.png]]
-
-
 ** motivation
-
-have switch to MATE desktop, and wonder, if have some new launcher of programs on linux, remainds
-everytime of the xmonad search comand that have, and under if there is a good one to use on MATE and do not
-cause a lot of load average on the system
 
 * version of [[https://github.com/odin-lang/odin][Odin]]
 
-dev-2023-05:0c352213
+dev-2023-06:0c352213
