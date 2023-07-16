@@ -17,9 +17,10 @@ import "core:sort"
 
 SHOW_LEAK :: true
 TEST_MODE :: false
-INTERFACE_RAYLIB :: true
+INTERFACE_RAYLIB :: false
 DEBUG_PATH :: false
 DEBUG_INTERFACE_WORD :: false
+IS_DEBUG_MODE :: true
 
 DEBUG_FILTERING_SEARCH :: false // this is for main debug
 
@@ -27,17 +28,134 @@ DEBUG_READ_ERRORN :: false
 COUNT_TOTAL_PROGRAMS_PATH :: false
 TEST_STATEMENT :: false
 
+FILE_MAGIC :: "#lang slideshow/simple"
+
+Presentation :: struct {
+  slide:        map[int]string,
+  total_number: int,
+}
+
+texto_to_lines_int :: proc(
+  file_text: string,
+  allocator := context.allocator,
+) -> []string {
+
+  split_string: []string = strings.split_after(file_text, "\n")
+
+  strings_values: []string = split_string[:len(split_string) - 1]
+
+  arr_values: [dynamic]string
+  // defer delete(arr_values)
+
+  for item, index in strings_values {
+    // TODO : leak
+    item_trim := strings.trim_space(item)
+    append(&arr_values, item_trim)
+  }
+
+  return arr_values[:]
+}
+
+
+read_entire_file_from_path :: proc(file_path_name: string) -> (string, bool) {
+
+  data_text_digest, ok := os.read_entire_file(
+    file_path_name,
+    context.allocator,
+  )
+  if !ok {
+    // could not read file
+    fmt.println("cannot read file")
+    return "", false
+  }
+  // defer delete(data_text_digest, context.allocator)
+
+  return string(data_text_digest), ok
+}
+
+parse_slide_file :: proc(file: string) -> (ret: Presentation) {
+
+  return ret
+}
+
+check_file_name_extention_and_content :: proc(
+  file: string,
+  allocator := context.allocator,
+) -> (
+  ret: bool,
+) {
+
+  ret = strings.contains(file, ".rkt")
+
+  file_str, ok := read_entire_file_from_path(file)
+  if !ok {
+    ret = false
+    return ret
+  }
+
+  file_str_arr: []string = texto_to_lines_int(file_str, allocator)
+  first_line_file_str := strings.trim_space(file_str_arr[0])
+
+  ret_value_check := strings.compare(first_line_file_str, FILE_MAGIC)
+
+  if ret_value_check == 0 {
+    ret = ret && true
+  } else {
+    ret = ret && false
+  }
+
+  return ret
+}
+
 main_source :: proc() {
 
+  file_name: string
 
-  display := rl.GetCurrentMonitor()
-  windown_dim :: n.int2{800, 600}
-  old_windown_dim := n.int2{
-    rl.GetMonitorWidth(display),
-    rl.GetMonitorHeight(display),
+  if len(os.args) > 1 {
+
+    file_name = os.args[1]
+  } else {
+    fmt.println(
+      "file name not pass, shout be\nslideshow-simple.bin <file_name>.rkt",
+    )
+    return
+  }
+
+  {
+    if !check_file_name_extention_and_content(file_name) {
+      fmt.println(
+        "file do not is a valid slideshow file format or extension\nshout be extension .rkt of lang Slideshow-simple",
+      )
+      return
+    }
+
+
+    file_str, ok := read_entire_file_from_path(file_name)
+    if !ok {
+      fmt.println("not been able to open or read file")
+      return
+    }
+
+    when false {
+      file_str_arr: []string = texto_to_lines_int(file_str, context.allocator)
+
+      for item in file_str_arr {
+        fmt.println(item)
+      }
+      fmt.println("file lenght", len(file_str_arr))
+    }
+
   }
 
   when INTERFACE_RAYLIB {
+
+    display := rl.GetCurrentMonitor()
+    windown_dim :: n.int2{800, 600}
+    old_windown_dim := n.int2{
+      rl.GetMonitorWidth(display),
+      rl.GetMonitorHeight(display),
+    }
+
 
     rl.InitWindow(windown_dim.x, windown_dim.y, "Spawn Rune")
     rl.SetTargetFPS(60)
@@ -53,20 +171,22 @@ main_source :: proc() {
     is_running :: true
 
 
-    if (rl.IsWindowFullscreen()) {
-      // if we are full screen, then go back to the windowed size
-      rl.SetWindowSize(windown_dim.x, windown_dim.y)
-    } else {
+    when !IS_DEBUG_MODE {
+      if (rl.IsWindowFullscreen()) {
+        // if we are full screen, then go back to the windowed size
+        rl.SetWindowSize(windown_dim.x, windown_dim.y)
+      } else {
 
-      // if we are not full screen, set the window size to match the monitor we are on
-      rl.SetWindowSize(
-        rl.GetMonitorWidth(display),
-        rl.GetMonitorHeight(display),
-      )
+        // if we are not full screen, set the window size to match the monitor we are on
+        rl.SetWindowSize(
+          rl.GetMonitorWidth(display),
+          rl.GetMonitorHeight(display),
+        )
+      }
+
+      // toggle the state
+      rl.ToggleFullscreen()
     }
-
-    // toggle the state
-    rl.ToggleFullscreen()
 
     // fmt.println(keyfor)
 
