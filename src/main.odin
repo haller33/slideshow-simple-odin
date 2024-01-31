@@ -1,19 +1,19 @@
-package spawn_rune
+package slideshow_simple
 
+import c "core:c"
 import fmt "core:fmt"
 import la "core:math/linalg"
 import n "core:math/linalg/hlsl"
-import rl "vendor:raylib"
 import rand "core:math/rand"
-import "core:strings"
-import "core:slice"
-import os "core:os"
-import c "core:c"
 import mem "core:mem"
+import os "core:os"
 import "core:runtime"
-import "core:unicode/utf8"
-import "core:unicode"
+import "core:slice"
 import "core:sort"
+import "core:strings"
+import "core:unicode"
+import "core:unicode/utf8"
+import rl "vendor:raylib"
 
 SHOW_LEAK :: true
 TEST_MODE :: false
@@ -30,7 +30,12 @@ TEST_STATEMENT :: false
 
 FILE_MAGIC :: "#lang slideshow/simple"
 
+
+MAX_SLIDES :: 1024 // 2 ^ 10 // stay minimalist, even on memory usage...
+MAX_STRING_LEN_BY_LINE :: 80
+
 Presentation :: struct {
+  slide_strs_arr:   [MAX_SLIDES][MAX_STRING_LEN_BY_LINE]string,
   slide:        map[int]string,
   total_number: int,
 }
@@ -75,6 +80,7 @@ read_entire_file_from_path :: proc(file_path_name: string) -> (string, bool) {
 
 parse_slide_file :: proc(file: string) -> (ret: Presentation) {
 
+  /// TODOO: implemet this
   return ret
 }
 
@@ -136,7 +142,7 @@ main_source :: proc() {
       return
     }
 
-    when false {
+    when true {
       file_str_arr: []string = texto_to_lines_int(file_str, context.allocator)
 
       for item in file_str_arr {
@@ -151,7 +157,7 @@ main_source :: proc() {
 
     display := rl.GetCurrentMonitor()
     windown_dim :: n.int2{800, 600}
-    old_windown_dim := n.int2{
+    old_windown_dim := n.int2 {
       rl.GetMonitorWidth(display),
       rl.GetMonitorHeight(display),
     }
